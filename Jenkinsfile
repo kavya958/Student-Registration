@@ -2,15 +2,10 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven_3.9.1'  // Must match name in Jenkins Maven config
+        maven 'Maven_3.9.1'
     }
 
     stages {
-        stage('Clone Repository') {
-            steps {
-                git 'https://github.com/kavya958/Student-Registration.git'
-            }
-        }
         stage('Build') {
             steps {
                 bat 'mvn clean install'
