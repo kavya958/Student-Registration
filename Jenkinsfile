@@ -8,22 +8,31 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                bat 'mvn clean install'
+                bat 'mvn clean package'
             }
         }
+
         stage('Test') {
             steps {
                 bat 'mvn test'
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                script {
+                    dockerImage = docker.build("student-registration:latest")
+                }
             }
         }
     }
 
     post {
         success {
-            echo '✅ Build and Tests Passed!'
+            echo '✅ Build, Test, and Docker Build Successful!'
         }
         failure {
-            echo '❌ Build Failed!'
+            echo '❌ One or more stages failed.'
         }
     }
 }
