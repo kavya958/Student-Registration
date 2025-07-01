@@ -33,13 +33,11 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    script {
-                        sh """
-                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                        docker tag ${IMAGE_NAME}:latest $DOCKER_USER/${IMAGE_NAME}:latest
-                        docker push $DOCKER_USER/${IMAGE_NAME}:latest
-                        """
-                    }
+                    bat """
+                        docker login -u %DOCKER_USER% -p %DOCKER_PASS%
+                        docker tag ${IMAGE_NAME}:latest %DOCKER_USER%/${IMAGE_NAME}:latest
+                        docker push %DOCKER_USER%/${IMAGE_NAME}:latest
+                    """
                 }
             }
         }
@@ -47,11 +45,12 @@ pipeline {
 
     post {
         success {
-            echo '✅ Build, Test, Docker Build, and Docker Push completed!'
+            echo '✅ All stages completed: Build, Test, Docker Build, and Docker Push!'
         }
         failure {
             echo '❌ One or more stages failed.'
         }
     }
 }
+
 
